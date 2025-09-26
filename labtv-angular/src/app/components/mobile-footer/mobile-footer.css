@@ -1,0 +1,125 @@
+/* Mobile Footer Navigation */
+.mobile-footer {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  border-top: 2px solid #00C7B1;
+  z-index: 1000;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-nav-container {
+  padding: 15px 20px;
+}
+
+.mobile-search-section {
+  margin-bottom: 15px;
+}
+
+.mobile-search-form {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.mobile-search-input {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 2px solid #00C7B1;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.mobile-search-input::placeholder {
+  color: #ccc;
+}
+
+.mobile-search-input:focus {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #00a896;
+}
+
+.mobile-search-btn {
+  padding: 12px 16px;
+  background: #00C7B1;
+  color: #000;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-search-btn:hover {
+  background: #00a896;
+  transform: scale(1.05);
+}
+
+.mobile-nav-buttons {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.mobile-nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  background: transparent;
+  border: 2px solid #00C7B1;
+  border-radius: 12px;
+  color: #00C7B1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  font-weight: 500;
+  min-height: 60px;
+}
+
+.mobile-nav-btn:hover {
+  background: #00C7B1;
+  color: #000;
+  transform: translateY(-2px);
+}
+
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.mobile-nav-btn span {
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+@media (max-width: 768px) {
+  .mobile-footer {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-footer {
+    display: none;
+  }
+}
+
+
+

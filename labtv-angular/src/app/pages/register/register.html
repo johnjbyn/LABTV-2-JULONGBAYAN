@@ -1,0 +1,168 @@
+<div class="register-page">
+  <div class="register-container">
+    <div class="register-header">
+      <img src="assets/LabTV-Loghi/2-blu.png" class="register-logo" alt="LabTV Logo" (click)="onLogoClick()" style="cursor: pointer;">
+      <h1>Crea un nuovo account</h1>
+      <p>Unisciti a LabTV e inizia a guardare i tuoi film preferiti!</p>
+    </div>
+
+    <form class="register-form" (ngSubmit)="onSubmit()" #registerFormRef="ngForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">Nome *</label>
+          <input 
+            type="text" 
+            id="firstName" 
+            name="firstName"
+            [(ngModel)]="registerForm.firstName"
+            required
+            #firstNameRef="ngModel"
+            [class.error]="firstNameRef.invalid && firstNameRef.touched"
+            placeholder="Il tuo nome"
+          >
+          <div class="error-message" *ngIf="firstNameRef.invalid && firstNameRef.touched">
+            Il nome è obbligatorio
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Cognome *</label>
+          <input 
+            type="text" 
+            id="lastName" 
+            name="lastName"
+            [(ngModel)]="registerForm.lastName"
+            required
+            #lastNameRef="ngModel"
+            [class.error]="lastNameRef.invalid && lastNameRef.touched"
+            placeholder="Il tuo cognome"
+          >
+          <div class="error-message" *ngIf="lastNameRef.invalid && lastNameRef.touched">
+            Il cognome è obbligatorio
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email"
+          [(ngModel)]="registerForm.email"
+          required
+          email
+          #emailRef="ngModel"
+          [class.error]="emailRef.invalid && emailRef.touched"
+          placeholder="la.tua@email.com"
+        >
+        <div class="error-message" *ngIf="emailRef.invalid && emailRef.touched">
+          <span *ngIf="emailRef.errors?.['required']">L'email è obbligatoria</span>
+          <span *ngIf="emailRef.errors?.['email']">Inserisci un'email valida</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password"
+            [(ngModel)]="registerForm.password"
+            required
+            minlength="8"
+            #passwordRef="ngModel"
+            [class.error]="passwordRef.invalid && passwordRef.touched"
+            placeholder="Minimo 8 caratteri"
+          >
+          <div class="error-message" *ngIf="passwordRef.invalid && passwordRef.touched">
+            <span *ngIf="passwordRef.errors?.['required']">La password è obbligatoria</span>
+            <span *ngIf="passwordRef.errors?.['minlength']">La password deve essere di almeno 8 caratteri</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Conferma Password *</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            name="confirmPassword"
+            [(ngModel)]="registerForm.confirmPassword"
+            required
+            #confirmPasswordRef="ngModel"
+            [class.error]="(confirmPasswordRef.invalid || !passwordsMatch()) && confirmPasswordRef.touched"
+            placeholder="Ripeti la password"
+          >
+          <div class="error-message" *ngIf="(confirmPasswordRef.invalid || !passwordsMatch()) && confirmPasswordRef.touched">
+            <span *ngIf="confirmPasswordRef.errors?.['required']">La conferma password è obbligatoria</span>
+            <span *ngIf="!passwordsMatch() && registerForm.confirmPassword">Le password non coincidono</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            name="acceptTerms"
+            [(ngModel)]="registerForm.acceptTerms"
+            required
+            #acceptTermsRef="ngModel"
+          >
+          <span class="checkmark"></span>
+          Accetto i <a href="#" class="terms-link">termini e le condizioni</a> *
+        </label>
+        <div class="error-message" *ngIf="acceptTermsRef.invalid && acceptTermsRef.touched">
+          Devi accettare i termini e le condizioni
+        </div>
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input 
+            type="checkbox" 
+            name="newsletter"
+            [(ngModel)]="registerForm.newsletter"
+          >
+          <span class="checkmark"></span>
+          Desidero ricevere newsletter e offerte speciali
+        </label>
+      </div>
+
+      <div class="free-trial">
+        <h3>🎉 Per te una prova GRATUITA da 30 giorni!</h3>
+        <p>Nessun costo nascosto, cancella quando vuoi.</p>
+      </div>
+
+      <button 
+        type="submit" 
+        class="register-btn"
+        [disabled]="!isFormValid() || isSubmitting"
+        [class.loading]="isSubmitting"
+      >
+        <span *ngIf="!isSubmitting">Registrati</span>
+        <span *ngIf="isSubmitting">Registrazione in corso...</span>
+      </button>
+
+      
+      <div class="error-message-container" *ngIf="showError">
+        <div class="error-icon">⚠</div>
+        <p>{{ errorMessage }}</p>
+      </div>
+
+      
+      <div class="success-message-container" *ngIf="showSuccess">
+        <div class="success-icon">✓</div>
+        <p>{{ successMessage }}</p>
+        <p class="redirect-message">Reindirizzamento alla home...</p>
+      </div>
+
+      <div class="form-footer">
+        <p>Hai già un account? <button type="button" class="link-btn" (click)="goToLogin()">Accedi</button></p>
+        <button type="button" *ngIf="isLoggedIn()" (click)="goToHome()" class="back-home link-btn">← Torna alla home</button>
+        <button type="button" (click)="goToContact()" class="contact-link link-btn">Contattaci</button>
+      </div>
+    </form>
+  </div>
+</div>

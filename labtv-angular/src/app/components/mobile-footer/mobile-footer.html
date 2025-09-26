@@ -1,0 +1,46 @@
+<!-- Mobile Footer Navigation -->
+<footer class="mobile-footer" *ngIf="isMobile && currentUser && !isPopupOpen">
+  <div class="mobile-nav-container">
+    <!-- Search Bar -->
+    <div class="mobile-search-section">
+      <form class="mobile-search-form" (ngSubmit)="onSearch()">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          name="searchQuery"
+          placeholder="Cerca film, serie TV..."
+          class="mobile-search-input"
+        />
+        <button type="submit" class="mobile-search-btn" aria-label="Cerca">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Pulsante di navigazione -->
+    <div class="mobile-nav-buttons">
+      <button class="mobile-nav-btn language-btn" (click)="toggleLanguage()">
+        <div class="nav-icon">🌐</div>
+        <span>Italiano</span>
+      </button>
+      
+      <a routerLink="/purchases" class="mobile-nav-btn">
+        <div class="nav-icon">🛒</div>
+        <span>Acquisti</span>
+      </a>
+      
+      <a routerLink="/contact" class="mobile-nav-btn">
+        <div class="nav-icon">📞</div>
+        <span>Contatta</span>
+      </a>
+      
+      <button class="mobile-nav-btn" (click)="handleUserAction()">
+        <div class="nav-icon">{{ currentUser ? '👤' : '🔑' }}</div>
+        <span>{{ currentUser ? 'Logout' : 'Accedi' }}</span>
+      </button>
+    </div>
+  </div>
+</footer>

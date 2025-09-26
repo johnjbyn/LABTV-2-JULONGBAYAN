@@ -1,0 +1,400 @@
+<div class="header">
+  <nav>
+    <img src="assets/LabTV-Loghi/2-blu.png" class="logo" (click)="onLogoClick()" style="cursor: pointer;">
+    
+    <div class="desktop-only">
+      <button class="language-btn">
+        Italiano <img src="assets/LabTV-Loghi/whiteDown-btn.png" alt="">
+      </button>
+      <button id="logout-btn" (click)="logout()" *ngIf="isLoggedIn()">Logout</button>
+      <button (click)="goToPurchases()" id="purchases-btn" class="purchases-btn">I Miei Acquisti</button>
+      <button (click)="goToContact()" id="contact-btn" class="contact-btn">Contattaci</button>
+    </div>
+  </nav>
+  
+  
+  <div class="nav-search-bar-small desktop-only">
+    <input 
+      type="text" 
+      id="movie-search-input-small" 
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="onSearch()"
+      (input)="onSearchInputChange()"
+      placeholder="Cerca..."
+      class="nav-search-input-small desktop-only"
+    >
+    <button 
+      id="movie-search-btn-small" 
+      (click)="onSearch()" 
+      class="nav-search-btn-small desktop-only"
+      type="button"
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+    </button>
+  </div>
+</div>
+
+
+<div *ngIf="isSearchActive" class="search-results-section">
+  <div class="search-header">
+    <h2>Risultati di ricerca per: "{{ displayedSearchQuery }}"</h2>
+    <button class="clear-search-btn" (click)="clearSearch()">✕ Chiudi Ricerca</button>
+  </div>
+  
+  <div *ngIf="isLoading" class="loading-message">
+    <p>Caricamento risultati...</p>
+  </div>
+  
+  <div *ngIf="!isLoading && searchResults.length === 0" class="no-results">
+    <p>Nessun risultato trovato per "{{ displayedSearchQuery }}"</p>
+  </div>
+  
+  <div *ngIf="!isLoading && searchResults.length > 0" class="search-results-grid">
+    <div class="movie-card" *ngFor="let movie of searchResults" (click)="showMovieDetail(movie)">
+      <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title || movie.name" class="movie-poster">
+      <div class="movie-info">
+        <h3>{{ movie.title || movie.name }}</h3>
+        <span class="movie-year">{{ (movie.release_date || movie.first_air_date) | date:'yyyy' }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="!isSearchActive">
+
+<section id="hero-section" class="hero-carousel-section">
+  <div class="hero-carousel">
+    <div class="hero-carousel-bg" [style.background-image]="heroMovie ? 'url(' + getBackdropUrl(heroMovie.backdrop_path) + ')' : ''"></div>
+    <div class="hero-carousel-overlay"></div>
+    <button class="hero-carousel-btn left" (click)="previousHero()" aria-label="Precedente">
+      <span class="arrow-left">‹</span>
+    </button>
+    <div class="hero-carousel-card" (click)="showMovieDetail(heroMovie!)" *ngIf="heroMovie">
+      <span class="hero-carousel-label">Show più guardati del momento</span>
+        <h1 class="hero-carousel-title">{{ heroMovie?.title || 'Caricamento...' }}</h1>
+      <span class="hero-carousel-year">{{ heroMovie?.release_date | date:'yyyy' }}</span>
+    </div>
+    <button class="hero-carousel-btn right" (click)="nextHero()" aria-label="Successivo">
+      <span class="arrow-right">›</span>
+    </button>
+  </div>
+</section>
+
+
+<section id="consigliati-section" class="carousel-section">
+  <h2 class="section-title">Consigliati per te</h2>
+  <div class="movies-slider-container">
+    <button class="slider-btn left" (click)="scrollCarousel('consigliati', 'left')" aria-label="Precedente">
+      <span class="arrow-left">‹</span>
+    </button>
+    <div class="movies-slider" #consigliatiTrack>
+      <div class="movie-card" *ngFor="let movie of recommendedMovies" (click)="showMovieDetail(movie)">
+        <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title || movie.name" class="movie-poster">
+        <div class="movie-info">
+          <h3>{{ movie.title || movie.name }}</h3>
+          <span class="movie-year">{{ (movie.release_date || movie.first_air_date) | date:'yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+    <button class="slider-btn right" (click)="scrollCarousel('consigliati', 'right')" aria-label="Successivo">
+      <span class="arrow-right">›</span>
+    </button>
+  </div>
+</section>
+
+
+<section id="serie-section" class="series-section">
+  <h2 class="section-title">Le migliori Serie TV</h2>
+  <div class="movies-slider-container">
+    <button class="slider-btn left" (click)="scrollCarousel('serie', 'left')" aria-label="Precedente">
+      <span class="arrow-left">‹</span>
+    </button>
+    <div class="movies-slider" #serieTrack>
+      <div class="movie-card" *ngFor="let movie of topRatedMovies" (click)="showMovieDetail(movie)">
+        <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title || movie.name" class="movie-poster">
+        <div class="movie-info">
+          <h3>{{ movie.title || movie.name }}</h3>
+          <span class="movie-year">{{ (movie.release_date || movie.first_air_date) | date:'yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+    <button class="slider-btn right" (click)="scrollCarousel('serie', 'right')" aria-label="Successivo">
+      <span class="arrow-right">›</span>
+    </button>
+  </div>
+</section>
+
+
+<div id="search-results" class="carousel-track" [style.display]="searchResults.length > 0 ? 'flex' : 'none'">
+  <div class="movie-card" *ngFor="let movie of searchResults" (click)="showMovieDetail(movie)">
+    <img [src]="getImageUrl(movie.poster_path)" [alt]="movie.title" class="movie-poster">
+  <div class="movie-info">
+    <h3>{{ movie.title || movie.name }}</h3>
+    <span class="movie-year">{{ (movie.release_date || movie.first_air_date) | date:'yyyy' }}</span>
+  </div>
+  </div>
+</div>
+
+
+
+<section class="all-movies-section" *ngIf="!searchQuery">
+  <div class="all-movies-container">
+    <button class="all-movies-btn" (click)="goToAllMovies()">
+      <span class="btn-icon">🎬</span>
+      <span class="btn-text">Tutti i Film</span>
+      <span class="btn-arrow">→</span>
+    </button>
+  </div>
+</section>
+
+</div> 
+
+
+<footer class="footer">
+  <div class="footer-content">
+    <img src="assets/LabTV-Loghi/2-blu.png" class="logo" alt="LabTV Logo" (click)="onLogoClick()" style="cursor: pointer;" />
+    <div class="social-links">
+      <h4>Seguici sui social</h4>
+      <div class="social-icons">
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/ig.png" alt="Instagram"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/twt.png" alt="Twitter"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/yt.png" alt="YouTube"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/fb.png" alt="Facebook"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/wsp.png" alt="Whatsapp"></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="#">FAQ</a>
+    <a href="#">Centro assistenza</a>
+    <a href="#">Termini d'uso</a>
+    <a href="#">Privacy</a>
+  </div>
+  <div class="footer-copy">
+    &copy; 2025 LabTV. Tutti i diritti riservati.
+  </div>
+</footer>
+
+
+<div id="popup-overlay" class="popup-overlay" [style.display]="showMovieDetailModal ? 'flex' : 'none'">
+  <div class="wide-popup" id="popup-box">
+    <button class="popup-close" (click)="closeMovieDetail()">×</button>
+    
+    <div class="popup-header">
+      <h2 id="popup-title">{{ selectedMovie?.title || selectedMovie?.name }}</h2>
+      <span id="popup-year">{{ (selectedMovie?.release_date || selectedMovie?.first_air_date) | date:'yyyy' }}</span>
+    </div>
+
+    <div class="popup-scrollable">
+      <div class="popup-media-row">
+      <img [src]="getImageUrl(selectedMovie?.poster_path || '')" [alt]="selectedMovie?.title || selectedMovie?.name" class="popup-img" />
+      <div id="popup-trailer" class="popup-trailer">
+        <div *ngIf="trailerLoading" class="trailer-loading">
+          <p style="color: #888;">Caricamento trailer...</p>
+        </div>
+        <div *ngIf="!trailerLoading && selectedMovieTrailer && currentTrailerUrl" class="trailer-container" (click)="onTrailerClick()">
+          <iframe 
+            [src]="currentTrailerUrl" 
+            frameborder="0" 
+            allowfullscreen
+            class="trailer-iframe"
+            [attr.data-key]="selectedMovieTrailer.key"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            title="Movie Trailer"
+            loading="lazy">
+          </iframe>
+        </div>
+        <div *ngIf="!trailerLoading && !selectedMovieTrailer" class="no-trailer">
+          <p style="color: #888;">Trailer non disponibile</p>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="popup-details">
+      
+      <div class="popup-section">
+        <h3>Trama</h3>
+        <p id="popup-sinossi" class="popup-sinossi">{{ selectedMovie?.overview }}</p>
+      </div>
+
+      
+      <div class="popup-section" *ngIf="hasGenres()">
+        <h3>Generi</h3>
+        <div class="genres-list">
+          <span class="genre-tag" *ngFor="let genre of selectedMovie?.genres">{{ genre.name }}</span>
+        </div>
+      </div>
+
+      
+      <div class="popup-section" *ngIf="!isTVShow(selectedMovie) && hasDirector()">
+        <h3>Regista</h3>
+        <p class="director-name">{{ getDirectorName(selectedMovie?.credits?.crew || []) }}</p>
+      </div>
+
+      
+      <div class="popup-section" *ngIf="isTVShow(selectedMovie) && hasTVShowDirector()">
+        <h3>Regista</h3>
+        <p class="director-name">{{ getTVShowDirectorName() }}</p>
+      </div>
+
+      
+      <div class="popup-section" *ngIf="hasCast()">
+        <h3>Cast Principale</h3>
+        <div class="cast-list">
+          <div class="cast-member" *ngFor="let actor of selectedMovie?.credits?.cast?.slice(0, 6)">
+            <img [src]="getImageUrl(actor.profile_path, 'w185')" [alt]="actor.name" class="cast-photo" />
+            <div class="cast-info">
+              <span class="cast-name">{{ actor.name }}</span>
+              <span class="cast-character">{{ actor.character }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="popup-section" *ngIf="hasSimilarMovies() || similarMoviesLoading">
+        <h3>{{ (selectedMovie?.first_air_date) ? 'Serie TV Simili' : 'Film Simili' }}</h3>
+        
+        
+        <div *ngIf="similarMoviesLoading" class="similar-movies-loading">
+          <p>Caricamento {{ (selectedMovie?.first_air_date) ? 'serie TV simili' : 'film simili' }}...</p>
+        </div>
+        
+        
+        <div class="similar-movies-container" *ngIf="!similarMoviesLoading && hasSimilarMovies()">
+          <button class="slider-btn left" (click)="scrollSimilarMovies('left')" aria-label="Precedente">
+            <span class="arrow-left">‹</span>
+          </button>
+          <div class="similar-movies" #similarMoviesTrack>
+            <div class="similar-movie" *ngFor="let similarMovie of selectedMovie?.similar?.results?.slice(0, 8)" (click)="showSimilarMovie(similarMovie)">
+              <img [src]="getImageUrl(similarMovie.poster_path)" [alt]="similarMovie.title || similarMovie.name" class="similar-poster" />
+              <span class="similar-title">{{ similarMovie.title || similarMovie.name }}</span>
+              <span class="similar-year">{{ (similarMovie.release_date || similarMovie.first_air_date) | date:'yyyy' }}</span>
+              <div class="similar-rating">
+                <span>⭐</span>
+                <span>{{ similarMovie.vote_average | number:'1.1-1' }}</span>
+              </div>
+            </div>
+          </div>
+          <button class="slider-btn right" (click)="scrollSimilarMovies('right')" aria-label="Successivo">
+            <span class="arrow-right">›</span>
+          </button>
+        </div>
+        
+        
+        <div *ngIf="!similarMoviesLoading && !hasSimilarMovies()" class="no-similar-movies">
+          <p>Nessuna {{ (selectedMovie?.first_air_date) ? 'serie TV simile' : 'film simile' }} trovata</p>
+        </div>
+      </div>
+
+      <!-- Suggested Movies Section - shown when no similar movies are available -->
+      <div class="popup-section" *ngIf="!hasSimilarMovies() && !similarMoviesLoading && (hasSuggestedMovies() || suggestedMoviesLoading)">
+        <h3>Film Consigliati</h3>
+        
+        <div *ngIf="suggestedMoviesLoading" class="suggested-movies-loading">
+          <p>Caricamento film consigliati...</p>
+        </div>
+        
+        <div class="suggested-movies-container" *ngIf="!suggestedMoviesLoading && hasSuggestedMovies()">
+          <div class="suggested-movies">
+            <div class="suggested-movie" *ngFor="let suggestedMovie of suggestedMovies" (click)="showSuggestedMovie(suggestedMovie)">
+              <img [src]="getImageUrl(suggestedMovie.poster_path)" [alt]="suggestedMovie.title || suggestedMovie.name" class="suggested-poster" />
+              <span class="suggested-title">{{ suggestedMovie.title || suggestedMovie.name }}</span>
+              <span class="suggested-year">{{ (suggestedMovie.release_date || suggestedMovie.first_air_date) | date:'yyyy' }}</span>
+              <div class="suggested-rating">
+                <span>⭐</span>
+                <span>{{ suggestedMovie.vote_average | number:'1.1-1' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="popup-actions" *ngIf="!isTVShow(selectedMovie)">
+        <div class="price-info" *ngIf="selectedMovie">
+          <span class="movie-price">€{{ getMoviePrice(selectedMovie) }}</span>
+          <span class="price-label">Prezzo</span>
+        </div>
+        
+        <div class="action-buttons">
+          <button 
+            *ngIf="!isMoviePurchased(selectedMovie?.id || 0)" 
+            id="popup-purchase-btn" 
+            class="popup-purchase-btn"
+            (click)="purchaseMovie(selectedMovie!)">
+            ACQUISTA ORA
+          </button>
+          
+          <button 
+            *ngIf="isMoviePurchased(selectedMovie?.id || 0)" 
+            id="popup-watch-btn" 
+            class="popup-watch-btn purchased">
+            ✓ ACQUISTATO - GUARDA
+          </button>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="popup-actions" *ngIf="isTVShow(selectedMovie)">
+      <div class="seasons-section">
+        <h3>Seleziona Stagione</h3>
+        <div class="seasons-container" *ngIf="selectedMovieSeasons && selectedMovieSeasons.length > 0">
+          <button class="slider-btn left" (click)="scrollSeasons('left')" aria-label="Precedente">
+            <span class="arrow-left">‹</span>
+          </button>
+          <div class="seasons-grid" #seasonsTrack>
+            <div 
+              class="season-card" 
+              *ngFor="let season of selectedMovieSeasons"
+              [class.selected]="selectedSeason?.season_number === season.season_number"
+              (click)="selectSeason(season)">
+            <img 
+              [src]="getImageUrl(season.poster_path, 'w300')" 
+              [alt]="season.name"
+              class="season-poster">
+            <div class="season-info">
+              <h4 class="season-name">{{ season.name }}</h4>
+              <p class="season-episodes">{{ season.episode_count }} episodi</p>
+              <p class="season-year">{{ season.air_date | date:'yyyy' }}</p>
+              <div class="season-rating" *ngIf="season.vote_average > 0">
+                <span>⭐</span>
+                <span>{{ season.vote_average | number:'1.1-1' }}</span>
+              </div>
+              <div class="season-price">
+                <span class="price">€{{ getSeasonPrice(season) }}</span>
+              </div>
+            </div>
+          </div>
+          <button class="slider-btn right" (click)="scrollSeasons('right')" aria-label="Successivo">
+            <span class="arrow-right">›</span>
+          </button>
+        </div>
+        
+        
+        <div class="season-purchase" *ngIf="selectedSeason">
+          <div class="selected-season-info">
+            <h4>Stagione Selezionata: {{ selectedSeason.name }}</h4>
+            <p>{{ selectedSeason.episode_count }} episodi - €{{ getSeasonPrice(selectedSeason) }}</p>
+          </div>
+          <button 
+            *ngIf="!isSeasonPurchased(selectedMovie?.id || 0, selectedSeason.season_number)" 
+            class="popup-purchase-btn"
+            (click)="purchaseSeason(selectedMovie!, selectedSeason)">
+            ACQUISTA STAGIONE
+          </button>
+          <button 
+            *ngIf="isSeasonPurchased(selectedMovie?.id || 0, selectedSeason.season_number)" 
+            class="popup-watch-btn purchased">
+            STAGIONE ACQUISTATA
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

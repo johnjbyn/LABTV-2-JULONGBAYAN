@@ -1,0 +1,236 @@
+
+<div class="header">
+  <nav>
+    <img src="assets/LabTV-Loghi/2-blu.png" class="logo">
+    <div>
+      <button class="language-btn">
+        Italiano <img src="assets/LabTV-Loghi/whiteDown-btn.png" alt="">
+      </button>
+      <button id="login-btn" *ngIf="isLoggedIn()" (click)="goToHome()">Torna alla Home</button>
+      <button id="contact-btn" class="contact-btn" (click)="goToContact()">Contattaci</button>
+    </div>
+  </nav>
+
+  
+  <div class="header-content">
+    <h1>Felici di vederti!</h1>
+    <h3>Soddisfa la tua voglia di intrattenimento in un click.</h3>
+    <p>
+      Vuoi guardare ora le tue SERIE TV preferite? <br>
+      Inserisci l'indirizzo email per abbonarti <br> o fare il login  e goderti il tuo abbonamento.
+    </p>
+    <form class="email-signup" (ngSubmit)="onEmailSubmit()" #emailForm="ngForm">
+      <input 
+        type="email" 
+        placeholder="indirizzo Email" 
+        [(ngModel)]="emailInput"
+        name="emailInput"
+        required
+      >
+      <button type="submit">Inizia</button>
+    </form>
+  </div>
+</div>
+
+
+<div id="choice-popup" class="popup" [class.active]="showChoiceModal">
+  <div class="popup-content">
+    <h2>Email ricevuta!</h2>
+    <p>Vuoi accedere o registrarti?</p>
+    <div class="choice-buttons">
+      <button type="button" class="choice-btn" (click)="showLogin()">Accedi</button>
+      <button type="button" class="choice-btn" (click)="showRegister()">Registrati</button>
+    </div>
+    <button class="close-btn" (click)="closeChoiceModal()">Chiudi</button>
+  </div>
+</div>
+
+
+<div id="login-popup" class="popup" [class.active]="showLoginModal">
+  <div class="popup-content">
+    <h2>Accedi al tuo account</h2>
+    <form (ngSubmit)="onLoginSubmit()" #loginForm="ngForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input 
+          type="email" 
+          [(ngModel)]="loginData.email"
+          name="email"
+          required
+          [class.error]="loginData.email && !isValidEmail(loginData.email)"
+        >
+        <div *ngIf="loginData.email && !isValidEmail(loginData.email)" class="error-message">
+          Inserisci un indirizzo email valido
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input 
+          type="password" 
+          [(ngModel)]="loginData.password"
+          name="password"
+          required
+        >
+      </div>
+      <button type="submit" class="action-btn" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Accesso in corso...' : 'Accedi' }}
+      </button>
+      <div class="form-links">
+        
+        <button type="button" class="link-btn" (click)="showRecovery()">Password dimenticata?</button>
+        <button type="button" class="link-btn" (click)="showRegister()">Crea un nuovo account</button>
+      </div>
+    </form>
+    <button class="close-btn" (click)="closeLoginModal()">Chiudi</button>
+  </div>
+</div>
+
+
+<div id="register-popup" class="popup" [class.active]="showRegisterModal">
+  <div class="popup-content">
+    <h2>Crea un nuovo account</h2>
+    <form (ngSubmit)="onRegisterSubmit()" #registerForm="ngForm">
+      <div class="form-group">
+        <label>Nome</label>
+        <input 
+          type="text" 
+          [(ngModel)]="registerData.firstName"
+          name="firstName"
+          required
+        >
+      </div>
+      <div class="form-group">
+        <label>Cognome</label>
+        <input 
+          type="text" 
+          [(ngModel)]="registerData.lastName"
+          name="lastName"
+          required
+        >
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input 
+          type="email" 
+          [(ngModel)]="registerData.email"
+          name="email"
+          required
+          [class.error]="registerData.email && !isValidEmail(registerData.email)"
+        >
+        <div *ngIf="registerData.email && !isValidEmail(registerData.email)" class="error-message">
+          Inserisci un indirizzo email valido
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input 
+          type="password" 
+          [(ngModel)]="registerData.password"
+          name="password"
+          required 
+          [class.error]="registerData.password && !isValidPassword(registerData.password)"
+        >
+        <div *ngIf="registerData.password && !isValidPassword(registerData.password)" class="error-message">
+          La password deve contenere almeno 8 caratteri e un carattere speciale
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Conferma Password</label>
+        <input 
+          type="password" 
+          [(ngModel)]="registerData.confirmPassword"
+          name="confirmPassword"
+          required
+          [class.error]="registerData.confirmPassword && registerData.password !== registerData.confirmPassword"
+        >
+        <div *ngIf="registerData.confirmPassword && registerData.password !== registerData.confirmPassword" class="error-message">
+          Le password non coincidono
+        </div>
+      </div>
+      
+      <div class="checkbox-group">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="registerData.acceptTerms"
+          name="acceptTerms"
+          required
+        >
+        <label for="terms">Accetto i <a href="#" class="terms-link">termini e le condizioni</a> del servizio</label>
+      </div>
+      
+      <div class="checkbox-group">
+        <input 
+          type="checkbox" 
+          [(ngModel)]="registerData.newsletter"
+          name="newsletter"
+        >
+        <label for="newsletter">Desidero ricevere newsletter</label>
+      </div>
+      <p class="free-trial">Per te una prova GRATUITA da 30 giorni!</p>
+      <button type="submit" class="action-btn" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Registrazione in corso...' : 'Registrati' }}
+      </button>
+      <div class="form-links">
+        
+        <button type="button" class="link-btn" (click)="showLogin()">Hai già un account? Accedi</button>
+      </div>
+    </form>
+    <button class="close-btn" (click)="closeRegisterModal()">Chiudi</button>
+  </div>
+</div>
+
+
+<div id="recovery-popup" class="popup" [class.active]="showRecoveryModal">
+  <div class="popup-content">
+    <h2>Recupera la tua password</h2>
+    <p>Inserisci la tua email per ricevere le istruzioni.</p>
+    <form (ngSubmit)="onRecoverySubmit()" #recoveryForm="ngForm">
+      <div class="form-group">
+        <label>Email</label>
+        <input 
+          type="email" 
+          [(ngModel)]="recoveryEmail"
+          name="recoveryEmail"
+          required
+          [class.error]="recoveryEmail && !isValidEmail(recoveryEmail)"
+        >
+        <div *ngIf="recoveryEmail && !isValidEmail(recoveryEmail)" class="error-message">
+          Inserisci un indirizzo email valido
+        </div>
+      </div>
+      <button type="submit" class="action-btn">Invia</button>
+      <div class="form-links">
+        
+        <button type="button" class="link-btn" (click)="returnToLoginFromRecovery()">Torna al login</button>
+      </div>
+    </form>
+    <button class="close-btn" (click)="returnToLoginFromRecovery()">Chiudi</button>
+  </div>
+</div>
+
+
+
+<footer class="footer">
+  <div class="footer-content">
+    <img src="assets/LabTV-Loghi/2-blu.png" class="logo" alt="LabTV Logo" (click)="onLogoClick()" style="cursor: pointer;" />
+    <div class="social-links">
+      <h4>Seguici sui social</h4>
+      <div class="social-icons">
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/ig.png" alt="Instagram"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/twt.png" alt="Twitter"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/yt.png" alt="YouTube"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/fb.png" alt="Facebook"></a>
+        <a href="#" class="social-icon"><img src="assets/LabTV-Loghi/wsp.png" alt="Whatsapp"></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="#">FAQ</a>
+    <a href="#">Centro assistenza</a>
+    <a href="#">Termini d'uso</a>
+    <a href="#">Privacy</a>
+  </div>
+  <div class="footer-copy">
+    &copy; 2025 LabTV. Tutti i diritti riservati.
+  </div>
+</footer>

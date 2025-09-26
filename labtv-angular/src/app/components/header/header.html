@@ -1,0 +1,111 @@
+
+<header class="header">
+  <nav class="nav">
+    <a routerLink="/" class="logo-link">
+      <img src="assets/LabTV-Loghi/2-blu.png" class="logo" alt="LabTV Logo">
+    </a>
+    
+    <div class="nav-actions desktop-only">
+
+      <!-- Desktop Layout -->
+      <button class="language-btn">
+        Italiano 
+        <img src="assets/LabTV-Loghi/whiteDown-btn.png" alt="">
+      </button>
+
+      <div class="user-actions" *ngIf="!currentUser; else userMenuDesktop">
+        <button class="nav-btn" (click)="showChoice()">Accedi</button>
+        <a routerLink="/contact" class="nav-btn contact-btn">Contattaci</a>
+      </div>
+
+      <ng-template #userMenuDesktop>
+        <div class="user-menu">
+          <button class="nav-btn profile-btn">
+            {{ currentUser?.firstName }} {{ currentUser?.lastName }}
+          </button>
+          <button class="nav-btn logout-btn" (click)="logout()">Logout</button>
+          <a routerLink="/contact" class="nav-btn contact-btn">Contattaci</a>
+        </div>
+      </ng-template>
+    </div>
+  </nav>
+</header>
+
+
+<div class="modal-overlay" *ngIf="showChoiceModal" (click)="closeModals()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Email ricevuta!</h2>
+    <p>Vuoi accedere o registrarti?</p>
+    <div class="choice-buttons">
+      <button class="choice-btn" (click)="showLogin()">Accedi</button>
+      <button class="choice-btn" (click)="showRegister()">Registrati</button>
+    </div>
+    <button class="close-btn" (click)="closeModals()">Chiudi</button>
+  </div>
+</div>
+
+
+<div class="modal-overlay" *ngIf="showLoginModal" (click)="closeModals()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Accedi al tuo account</h2>
+    <form>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" required>
+      </div>
+      <button type="submit" class="action-btn">Accedi</button>
+      <div class="form-links">
+        <a href="#" class="form-link">Password dimenticata?</a>
+        <button type="button" class="form-link link-btn" (click)="showRegister()">Crea un nuovo account</button>
+      </div>
+    </form>
+    <button class="close-btn" (click)="closeModals()">Chiudi</button>
+  </div>
+</div>
+
+
+<div class="modal-overlay" *ngIf="showRegisterModal" (click)="closeModals()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h2>Crea un nuovo account</h2>
+    <form>
+      <div class="form-group">
+        <label>Nome</label>
+        <input type="text" required>
+      </div>
+      <div class="form-group">
+        <label>Cognome</label>
+        <input type="text" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" required minlength="8">
+      </div>
+      <div class="form-group">
+        <label>Conferma Password</label>
+        <input type="password" required>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">Accetto i termini e le condizioni</label>
+      </div>
+      <div class="checkbox-group">
+        <input type="checkbox" id="newsletter">
+        <label for="newsletter">Desidero ricevere newsletter</label>
+      </div>
+      <p class="free-trial">Per te una prova GRATUITA da 30 giorni!</p>
+      <button type="submit" class="action-btn">Registrati</button>
+      <div class="form-links">
+        <button type="button" class="form-link link-btn" (click)="showLogin()">Hai già un account? Accedi</button>
+      </div>
+    </form>
+    <button class="close-btn" (click)="closeModals()">Chiudi</button>
+  </div>
+</div>
